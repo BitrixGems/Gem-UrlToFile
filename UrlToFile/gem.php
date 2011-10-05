@@ -1,6 +1,6 @@
 <?php
 /**
- * Адаптация плагина для symfony sfImageTransform к Битриксу
+ * Загрузка файлов по урлу
  *
  * @author Kalinin Alexey <hsalkaline@gmail.com>
  *
@@ -11,8 +11,8 @@ class BitrixGem_UrlToFile extends BaseBitrixGem {
 		'GEM' => 'UrlToFile',
 		'AUTHOR' => 'Kalinin Alexey',
 		'AUTHOR_LINK' => 'mailto:hsalkaline@gmail.com',
-		'DATE' => '30.05.2011',
-		'VERSION' => '0.1',
+		'DATE' => '05.10.2011',
+		'VERSION' => '0.2',
 		'NAME' => 'UrlToFile',
 		'DESCRIPTION' => "Добавление в загрузчик файлов в инфоблоках возможности загрузки файла по его URL",
 		"REQUIRED_GEMS" => array('jQueryLoader', 'BitrixURLTools'),
@@ -41,8 +41,8 @@ class BitrixGem_UrlToFile extends BaseBitrixGem {
 						if(name.match(/DETAIL_PICTURE/)){
 							itemName="PROP[DETAIL_PICTURE_BGURL]"
 						}
-						if(name.match(/PROP\[\d+\]\[(\w+)\]/)){
-							itemName = name.replace(/PROP\[(\d+)\]\[(\w+)\]/, "PROP[$1][$2_BGURL]")
+						if(name.match(/PROP\[\d+\]\[(.+?)\]/)){
+							itemName = name.replace(/PROP\[(\d+)\]\[(.+?)\]/, "PROP[$1][$2_BGURL]")
 						}
 						if(itemName){
 							item.attr("name", itemName)
@@ -74,11 +74,11 @@ class BitrixGem_UrlToFile extends BaseBitrixGem {
 			}
 			foreach ( $aProperty as $sKey => $mValue ) {
 				$aMatches = array();
-				if ( preg_match( "/(\w+)_BGURL/", $sKey, &$aMatches ) > 0 ) {
+				if ( preg_match( "/(.+?)_BGURL/", $sKey, &$aMatches ) > 0 ) {
 					$mNewValue = CFile::MakeFileArray( $mValue['VALUE'] );
 					if ( $this->isValidFileArray( $mNewValue ) ) {
 						$iPropertyID = $aMatches[1];
-						$aProperty[$iPropertyID]['VALUE'] = $mNewValue;
+						$aProperty[$iPropertyID] = $mNewValue;
 					}
 				}
 			}
